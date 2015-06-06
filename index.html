@@ -2,23 +2,22 @@
 <html ng-app>
 
 <head>
-    <title>Hello AngularJS</title>
+    <title>NlpKit</title>
     <meta charset = "UTF-8">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
     <script type="text/javascript" src="rakutenma.js" charset="UTF-8"></script>
     <script type="text/javascript" src="model_ja.js" charset="UTF-8"></script>
     <script type="text/javascript" src="hanzenkaku.js" charset="UTF-8"></script>
-
+    <script type="text/javascript" src="wordcloud2.js" charset="UTF-8"></script>
     <script type="text/javascript" charset="UTF-8" src = "app.js"></script>
     
 </head>
 
-<body>
+<body style = "margin: 3% 5%;">
 
 <div ng-controller="mainCtrl" class="container-fluid">
 
@@ -26,15 +25,21 @@
     <form>
         <div class="form-group col-md-12">
 
-            <h2 ng-model = "message">{{message}}</h2>
+            <h1>NlpKit</h1>
 
-            <textarea ng-model = "text" class="form-control" placeholder = "ここにテキスト入力してな！"></textarea>
+            <p ng-model = "message">{{message}}</p>
 
-            <input type = "submit" ng-click = "analyze">
+            <textarea ng-model = "text" class="form-control" rows = "10" placeholder = "ここにテキスト入力してな！"></textarea>
 
-            <div class = "col-md-11"></div>
+            <br>
+
+            <div class = "col-md-10"></div>
             <div class = "col-md-1">
-                <p ng-model = "wordcount">{{wordcount}}文字</p>
+                <em ng-model = "wordcount">{{wordcount}}文字</em>
+            </div>
+
+            <div class = "col-md-1">
+                <button type="submit" ng-click = "clear()" class="btn btn-primary">クリア</button>                
             </div>
         </div>
     </form>
@@ -49,16 +54,23 @@
 
         <div class = "col-md-6">
             <h3>単語出現頻度</h3>
-            <table class="table table-striped">
+            <table id = "wordfreq" class="table table-striped">
+                <tr>
+                    <th>単語</th>
+                    <th>出現頻度</th>
+                </tr>
                 <tr ng-repeat = "wordinfo in wordfreq">    
-                    <td>{{wordinfo.name}}</td>
-                    <td>{{wordinfo.freq}}</td>
+                    <td>{{wordinfo[0]}}</td>
+                    <td>{{wordinfo[1]}}</td>
                 </tr>
             </table>
         </div>
 
         <div class = "col-md-6">
             <h3>形態素解析(単語分割 & 品詞付け)</h3>
+            <a href = "https://github.com/rakuten-nlp/rakutenma/blob/master/README-ja.md#日本語品詞リストと対応する-bccwj-の品詞名" target = "_blank">日本語品詞リストと対応する BCCWJ の品詞名</a>
+            <br><br>
+            
             <table class="table table-striped">
                 <tr>
                     <th>単語</th>
