@@ -1,0 +1,83 @@
+<!doctype html>
+<html ng-app>
+
+<head>
+    <title>Hello AngularJS</title>
+    <meta charset = "UTF-8">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+    <script type="text/javascript" src="rakutenma.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="model_ja.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="hanzenkaku.js" charset="UTF-8"></script>
+
+    <script type="text/javascript" charset="UTF-8" src = "app.js"></script>
+    
+</head>
+
+<body>
+
+<div ng-controller="mainCtrl" class="container-fluid">
+
+    <div class = "row">
+    <form>
+        <div class="form-group col-md-12">
+
+            <h2 ng-model = "message">{{message}}</h2>
+
+            <textarea ng-model = "text" class="form-control" placeholder = "ここにテキスト入力してな！"></textarea>
+
+            <input type = "submit" ng-click = "analyze">
+
+            <div class = "col-md-11"></div>
+            <div class = "col-md-1">
+                <p ng-model = "wordcount">{{wordcount}}文字</p>
+            </div>
+        </div>
+    </form>
+    </div>
+
+    <div class = "row">
+
+        <div class = "col-md-12">
+            <div class = "col-md-11"></div>
+            <div class = "col-md-1"></div>
+        </div>
+
+        <div class = "col-md-6">
+            <h3>単語出現頻度</h3>
+            <table class="table table-striped">
+                <tr ng-repeat = "wordinfo in wordfreq">    
+                    <td>{{wordinfo.name}}</td>
+                    <td>{{wordinfo.freq}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class = "col-md-6">
+            <h3>形態素解析(単語分割 & 品詞付け)</h3>
+            <table class="table table-striped">
+                <tr>
+                    <th>単語</th>
+                    <th>品詞</th>
+                </tr>
+
+                <tr ng-repeat = "token in tokens">    
+                    <td>{{token[0]}}</td>
+                    <td>{{token[1]}}</td>
+                </tr>
+            </table>
+                
+            <p ng-model = "report">{{report}}</p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+</html>
+
