@@ -16,35 +16,35 @@
     
 </head>
 
-<body style = "margin: 3% 5%;">
+<body>
 
 <div ng-controller="mainCtrl" class="container-fluid">
 
-    <div class = "row">
+    <div class = "row" style = "background-image: url('http://kyu999.github.io/Scalearn/images/highlight-bg.jpg');">
     <form>
-        <div class="form-group col-md-12">
+        <div class="form-group col-md-12"  style = "padding: 3%;">
 
-            <h1>NlpKit</h1>
+            <h1 style = "text-align: center; font-family: 'Impact'; font-size: 80px;">NlpKit</h1>
 
-            <p ng-model = "message">{{message}}</p>
+            <p style = "text-align: center; color: gray; font-family: 'Arial Black';">Welcome to NlpKit :) NlpKit is a tool to analyze Japanese text easily on your browser. You don't need to install anything. Just copy and paste the text.</p>
 
-            <textarea ng-model = "text" class="form-control" rows = "10" placeholder = "ここにテキスト入力してな！"></textarea>
+            <textarea ng-model = "text" class="form-control" rows = "10" placeholder = "Paste your text here. It takes a bit time to deal with long text."></textarea>
 
             <br>
 
             <div class = "col-md-10"></div>
             <div class = "col-md-1">
-                <em ng-model = "wordcount">{{wordcount}}文字</em>
+                <em ng-model = "wordcount">{{wordcount}} words</em>
             </div>
 
             <div class = "col-md-1">
-                <button type="submit" ng-click = "clear()" class="btn btn-primary">クリア</button>                
+                <button type="submit" ng-click = "clear()" class="btn btn-primary">Clear</button>                
             </div>
         </div>
     </form>
     </div>
 
-    <div class = "row">
+    <div class = "row"  style = "margin: 3% 5%;">
 
         <div class = "col-md-12">
             <div class = "col-md-11"></div>
@@ -52,11 +52,11 @@
         </div>
 
         <div class = "col-md-6">
-            <h3>単語出現頻度</h3>
+            <h3>Word Frequency</h3>
             <table id = "wordfreq" class="table table-striped">
                 <tr>
-                    <th>単語</th>
-                    <th>出現頻度</th>
+                    <th>Word</th>
+                    <th>Frequency</th>
                 </tr>
                 <tr ng-repeat = "wordinfo in wordfreq">    
                     <td>{{wordinfo[0]}}</td>
@@ -66,14 +66,14 @@
         </div>
 
         <div class = "col-md-6">
-            <h3>形態素解析(単語分割 & 品詞付け)</h3>
-            <a href = "https://github.com/rakuten-nlp/rakutenma/blob/master/README-ja.md#日本語品詞リストと対応する-bccwj-の品詞名" target = "_blank">日本語品詞リストと対応する BCCWJ の品詞名</a>
+            <h3>Wordbreak & Part of Speech Tagging</h3>
+            <a href = "https://github.com/rakuten-nlp/rakutenma/blob/master/README-ja.md#日本語品詞リストと対応する-bccwj-の品詞名" target = "_blank">Correspondence Table with Japanese Part of Speech</a>
             <br><br>
             
             <table class="table table-striped">
                 <tr>
-                    <th>単語</th>
-                    <th>品詞</th>
+                    <th>Word</th>
+                    <th>Part of Speech</th>
                 </tr>
 
                 <tr ng-repeat = "token in tokens">    
