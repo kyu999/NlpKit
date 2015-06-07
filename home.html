@@ -12,11 +12,15 @@
     <script type="text/javascript" src="rakutenma.js" charset="UTF-8"></script>
     <script type="text/javascript" src="model_ja.js" charset="UTF-8"></script>
     <script type="text/javascript" src="hanzenkaku.js" charset="UTF-8"></script>
+    <script src="d3.js"></script>
+    <script src="d3.layout.cloud.js"></script>
+
     <script type="text/javascript" charset="UTF-8" src = "app.js"></script>
     
 </head>
 
 <body>
+
 
 <div ng-controller="mainCtrl" class="container-fluid">
 
@@ -52,6 +56,10 @@
         </div>
 
         <div class = "col-md-6">
+        
+            <h3>Word Cloud by Word Frequency</h3>
+            <div id = "notebook"></div>
+
             <h3>Word Frequency</h3>
             <table id = "wordfreq" class="table table-striped">
                 <tr>
@@ -59,8 +67,8 @@
                     <th>Frequency</th>
                 </tr>
                 <tr ng-repeat = "wordinfo in wordfreq">    
-                    <td>{{wordinfo[0]}}</td>
-                    <td>{{wordinfo[1]}}</td>
+                    <td>{{wordinfo.word}}</td>
+                    <td>{{wordinfo.freq}}</td>
                 </tr>
             </table>
         </div>
