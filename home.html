@@ -33,9 +33,13 @@
 
             <h1 style = "text-align: center; font-family: 'Impact'; font-size: 80px;">NlpKit</h1>
 
-            <p style = "text-align: center; color: gray; font-family: 'Arial Black';">Welcome to NlpKit :) NlpKit is a tool to analyze Japanese text easily on your browser. You don't need to install anything. Just copy and paste the text.</p>
+                <div class = "col-md-1"></div>
 
-            <br>
+                <div class = "col-md-10" style = "margin: 30px;">
+                    <h4 ng-model = "msg" style = "text-align: center; color: gray; font-family: 'Arial Black';">{{msg}}</h4>
+                </div>
+
+                <div class = "col-md-1"></div>
 
             <textarea ng-model = "text" class="form-control" rows = "10" placeholder = "Paste your text here. It takes a bit time to deal with long text."></textarea>
 
@@ -50,8 +54,9 @@
             </div>
 
             <div class = "col-md-1">
-                <button type="submit" ng-click = "clear()" class="btn btn-primary">Clear</button>                
+                <button type="submit" ng-click = "clear()" class="btn btn-primary">Clear</button>  
             </div>
+
         </div>
     </form>
     </div>

@@ -4,17 +4,14 @@ rma.featset = RakutenMA.default_featset_ja;
 rma.hash_func = RakutenMA.create_hash_func(15);
 
 // jsではsortが安定しないのでsort用関数. (e.g.): [ {"???": X, "freq": 4}, {"???": Y, "freq": 33} ] => [ {"???": Y, "freq": 33}, {"???": X, "freq": 4} ]
-var compare = function(dic1, dic2){
+function compare(dic1, dic2){
   return dic1.freq - dic2.freq;
 }
 
 // 有効な品詞群
 var validFeature = ["E", "N-n", "N-nc", "N-pn", "V-c", "F", "J-c", "J-tari"]
-console.log(validFeature)
 
-// ユーザーがコピペしたテキストを取得する(angularを利用して瞬時に取得する)
-// 取得したテキストを形態素解析にかける(token化)
-var check_wordfreq = function(tokens){
+function check_wordfreq(tokens){
     var wordfreq = {}
 
     // 単語の出現頻度数え上げ
@@ -32,6 +29,7 @@ var check_wordfreq = function(tokens){
           else{
               wordfreq[word] = 1
           }
+
         }
 
     })
@@ -47,16 +45,36 @@ var check_wordfreq = function(tokens){
     return sorted_wordfreq
 }
 
+var welcome_msg = "Welcome to NlpKit :) NlpKit is a tool to analyze Japanese text easily on your browser. You don't need to install anything. Just copy and paste the text."
+
+function startMsg(value){
+    if(value.length < 3){
+        return welcome_msg
+    }else{
+        return "Wait a moment... It take a bit time to show your result."
+    }
+}
+
+function finishMsg(value){
+    if(value.length < 3){
+        return welcome_msg
+    }else{
+        return "Done Analyzing!! Please check out the result!!"
+    }
+}
+
 // angulerJS controller
-var mainCtrl = function($scope) {
+function mainCtrl($scope) {
 
     $scope.text = ""
+    $scope.lettercount = 0
     $scope.tokens = [] // format: [ ["tanaka", "N"], ["ga", "X"], ["Work", "V"] ]
     $scope.wordcount = 0
     $scope.wordfreq = []
 
     //ユーザーがコピペしたテキストが変更されるたびに実行
     $scope.$watch("text", function(newValue, oldValue){
+        $scope.msg = startMsg(newValue)
         $scope.lettercount = newValue.length
         $scope.tokens = rma.tokenize(newValue)
         $scope.wordcount = $scope.tokens.length
@@ -65,6 +83,8 @@ var mainCtrl = function($scope) {
 
         // グローバス関数呼び出し
         window.makeWordCloud($scope.wordfreq, "#notebook", 500)
+
+        $scope.msg = finishMsg(newValue)
     });
 
     $scope.clear = function(){
