@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
     <script type="text/javascript" src="rakutenma.js" charset="UTF-8"></script>
@@ -21,7 +22,6 @@
 
 <body>
 
-
 <div ng-controller="mainCtrl" class="container-fluid">
 
     <div class = "row" style = "background-image: url('http://kyu999.github.io/Scalearn/images/highlight-bg.jpg');">
@@ -31,6 +31,8 @@
             <h1 style = "text-align: center; font-family: 'Impact'; font-size: 80px;">NlpKit</h1>
 
             <p style = "text-align: center; color: gray; font-family: 'Arial Black';">Welcome to NlpKit :) NlpKit is a tool to analyze Japanese text easily on your browser. You don't need to install anything. Just copy and paste the text.</p>
+
+            <br>
 
             <textarea ng-model = "text" class="form-control" rows = "10" placeholder = "Paste your text here. It takes a bit time to deal with long text."></textarea>
 
@@ -56,11 +58,13 @@
         </div>
 
         <div class = "col-md-6">
-        
+
             <h3>Word Cloud by Word Frequency</h3>
+            <br>
             <div id = "notebook"></div>
 
             <h3>Word Frequency</h3>
+            <p>Note: This excludes unimportant words like preposition.</p>
             <table id = "wordfreq" class="table table-striped">
                 <tr>
                     <th>Word</th>
