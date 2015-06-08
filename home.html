@@ -16,8 +16,11 @@
     <script src="d3.js"></script>
     <script src="d3.layout.cloud.js"></script>
 
+    <!-- app.js use functions defined at wordclouding.js, so load wordclouding in advance -->
+    <script type="text/javascript" charset="UTF-8" src = "wordclouding.js"></script>
+
     <script type="text/javascript" charset="UTF-8" src = "app.js"></script>
-    
+
 </head>
 
 <body>
@@ -38,7 +41,10 @@
 
             <br>
 
-            <div class = "col-md-10"></div>
+            <div class = "col-md-9"></div>
+            <div class = "col-md-1">
+                <em ng-model = "wordcount">{{lettercount}} letters</em>
+            </div>
             <div class = "col-md-1">
                 <em ng-model = "wordcount">{{wordcount}} words</em>
             </div>
