@@ -9,7 +9,7 @@ function compare(dic1, dic2){
 }
 
 // 有効な品詞群
-var validFeature = ["E", "N-n", "N-nc", "N-pn", "V-c", "F", "J-c", "J-tari"]
+var validFeature = ["E", "N-nc", "N-pn", "V-c", "F", "J-c", "J-tari"]
 
 function check_wordfreq(tokens){
     var wordfreq = {}
