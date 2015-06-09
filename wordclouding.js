@@ -21,6 +21,7 @@ window.makeWordCloud = function(wordfreqs, parent_elem, svgscale){
               return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
             })
             .text(function(d) { return d.text; });
+
       }
 
       d3.select("svg").remove()

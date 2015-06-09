@@ -92,4 +92,3 @@ function mainCtrl($scope) {
     }
 
 }
-  

@@ -6,7 +6,7 @@
     <meta charset = "UTF-8">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
@@ -15,11 +15,16 @@
     <script type="text/javascript" src="hanzenkaku.js" charset="UTF-8"></script>
     <script src="d3.js"></script>
     <script src="d3.layout.cloud.js"></script>
+    <script src="smoothScroll.js"></script>
 
-    <!-- app.js use functions defined at wordclouding.js, so load wordclouding in advance -->
     <script type="text/javascript" charset="UTF-8" src = "wordclouding.js"></script>
 
     <script type="text/javascript" charset="UTF-8" src = "app.js"></script>
+
+    <style>
+        .eng { font-family: Comic Sans MS; }
+
+    </style>
 
 </head>
 
@@ -29,14 +34,14 @@
 
     <div class = "row" style = "background-image: url('http://kyu999.github.io/Scalearn/images/highlight-bg.jpg');">
     <form>
-        <div class="form-group col-md-12"  style = "padding: 3%;">
+        <div class="form-group col-md-12 eng"  style = "padding: 3%;">
 
             <h1 style = "text-align: center; font-family: 'Impact'; font-size: 80px;">NlpKit</h1>
 
                 <div class = "col-md-1"></div>
 
-                <div class = "col-md-10" style = "margin: 30px;">
-                    <h4 ng-model = "msg" style = "text-align: center; color: gray; font-family: 'Arial Black';">{{msg}}</h4>
+                <div class = "col-md-10" style = "margin-top: 0px; margin-bottom: 30px;">
+                    <h3 ng-model = "msg" style = "text-align: center; color: gray;"><strong>{{msg}}</strong></h3>
                 </div>
 
                 <div class = "col-md-1"></div>
@@ -70,37 +75,37 @@
 
         <div class = "col-md-6">
 
-            <h3>Word Cloud by Word Frequency</h3>
+            <h3 style = "font-family: Impact;">Word Cloud by Word Frequency</h3>
             <br>
             <div id = "notebook"></div>
 
-            <h3>Word Frequency</h3>
-            <p>Note: This excludes unimportant words like preposition.</p>
+            <h3 style = "font-family: Impact;">Word Frequency</h3>
+            <p class = "eng">Note: This excludes unimportant words like preposition.</p>
             <table id = "wordfreq" class="table table-striped">
-                <tr>
+                <tr class = "eng">
                     <th>Word</th>
                     <th>Frequency</th>
                 </tr>
                 <tr ng-repeat = "wordinfo in wordfreq">    
-                    <td>{{wordinfo.word}}</td>
+                    <td><a href = "#{{wordinfo.word}}">{{wordinfo.word}}</a></td>
                     <td>{{wordinfo.freq}}</td>
                 </tr>
             </table>
         </div>
 
         <div class = "col-md-6">
-            <h3>Wordbreak & Part of Speech Tagging</h3>
-            <a href = "https://github.com/rakuten-nlp/rakutenma/blob/master/README-ja.md#日本語品詞リストと対応する-bccwj-の品詞名" target = "_blank">Correspondence Table with Japanese Part of Speech</a>
+            <h3 style = "font-family: Impact;">Wordbreak & Part of Speech Tagging</h3>
+            <a href = "https://github.com/rakuten-nlp/rakutenma/blob/master/README-ja.md#日本語品詞リストと対応する-bccwj-の品詞名" target = "_blank" class = "eng">Correspondence Table with Japanese Part of Speech</a>
             <br><br>
             
             <table class="table table-striped">
-                <tr>
+                <tr class = "eng">
                     <th>Word</th>
                     <th>Part of Speech</th>
                 </tr>
 
                 <tr ng-repeat = "token in tokens">    
-                    <td>{{token[0]}}</td>
+                    <td id = "{{token[0]}}">{{token[0]}}</td>
                     <td>{{token[1]}}</td>
                 </tr>
             </table>
