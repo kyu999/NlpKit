@@ -37,7 +37,7 @@ function check_wordfreq(tokens){
     // Hashmap => Sorted Array by Word Frequency
     sorted_wordfreq = []
     for(word in wordfreq){
-        sorted_wordfreq.push({"word": word, "freq": wordfreq[word]})
+        sorted_wordfreq.push({"word": word, "value": wordfreq[word]})
     }
 
     sorted_wordfreq.sort(compare)
@@ -82,7 +82,7 @@ function mainCtrl($scope) {
         $scope.wordfreq = check_wordfreq($scope.tokens)
 
         // グローバス関数呼び出し
-        window.makeWordCloud($scope.wordfreq, "#notebook", 500)
+        window.makeWordCloud($scope.wordfreq, "#notebook", 500, "wordcloud", "Impact")
 
         $scope.msg = finishMsg(newValue)
     });
