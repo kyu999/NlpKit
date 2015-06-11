@@ -90,7 +90,7 @@
                     <th>Word</th>
                     <th>Frequency</th>
                 </tr>
-                <tr ng-repeat = "wordinfo in ctrl.wordfreq">    
+                <tr ng-repeat = "wordinfo in ctrl.wordfreq | orderBy:'-value'">    
                     <td><a href = "#{{wordinfo.word}}">{{wordinfo.word}}</a></td>
                     <td>{{wordinfo.value}}</td>
                 </tr>
@@ -114,7 +114,6 @@
                 </tr>
             </table>
                 
-            <p ng-model = "report">{{report}}</p>
         </div>
     </div>
 

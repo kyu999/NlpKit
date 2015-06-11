@@ -35,14 +35,12 @@ function check_wordfreq(tokens){
     })
 
     // Hashmap => Sorted Array by Word Frequency
-    sorted_wordfreq = []
+    wordfreq_dic = []
     for(word in wordfreq){
-        sorted_wordfreq.push({"word": word, "value": wordfreq[word]})
+        wordfreq_dic.push({"word": word, "value": wordfreq[word]})
     }
 
-    sorted_wordfreq.sort(compare)
-    sorted_wordfreq.reverse()
-    return sorted_wordfreq
+    return wordfreq_dic
 }
 var welcome_msg = "Welcome to NlpKit :) NlpKit is a tool to analyze Japanese text easily on your browser. You don't need to install anything. Just copy and paste the text."
 
@@ -61,6 +59,8 @@ angular.module('app', []).controller('mainCtrl', function($timeout) {
 
     ctrl.clear = function(){
         ctrl.text = ""
+        ctrl.lettercount = 0
+        ctrl.wordcount = 0
     }
 
     ctrl.start = function(){
