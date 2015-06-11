@@ -44,51 +44,44 @@ function check_wordfreq(tokens){
     sorted_wordfreq.reverse()
     return sorted_wordfreq
 }
-
 var welcome_msg = "Welcome to NlpKit :) NlpKit is a tool to analyze Japanese text easily on your browser. You don't need to install anything. Just copy and paste the text."
 
-function startMsg(value){
-    if(value.length < 3){
-        return welcome_msg
-    }else{
-        return "Wait a moment... It take a bit time to show your result."
-    }
-}
-
-function finishMsg(value){
-    if(value.length < 3){
-        return welcome_msg
-    }else{
-        return "Done Analyzing!! Please check out the result!!"
-    }
-}
-
 // angulerJS controller
-function mainCtrl($scope) {
+angular.module('app', []).controller('mainCtrl', function($timeout) {
 
-    $scope.text = ""
-    $scope.lettercount = 0
-    $scope.tokens = [] // format: [ ["tanaka", "N"], ["ga", "X"], ["Work", "V"] ]
-    $scope.wordcount = 0
-    $scope.wordfreq = []
+    var ctrl = this;
 
-    //ユーザーがコピペしたテキストが変更されるたびに実行
-    $scope.$watch("text", function(newValue, oldValue){
-        $scope.msg = startMsg(newValue)
-        $scope.lettercount = newValue.length
-        $scope.tokens = rma.tokenize(newValue)
-        $scope.wordcount = $scope.tokens.length
-        $scope.text = newValue
-        $scope.wordfreq = check_wordfreq($scope.tokens)
+    ctrl.msg = welcome_msg
+    ctrl.flag = false
+    ctrl.text = ""
+    ctrl.lettercount = 0
+    ctrl.tokens = [] // format: [ ["tanaka", "N"], ["ga", "X"], ["Work", "V"] ]
+    ctrl.wordcount = 0
+    ctrl.wordfreq = []
 
-        // グローバス関数呼び出し
-        window.makeWordCloud($scope.wordfreq, "#notebook", 500, "wordcloud", "Impact")
-
-        $scope.msg = finishMsg(newValue)
-    });
-
-    $scope.clear = function(){
-        $scope.text = ""
+    ctrl.clear = function(){
+        ctrl.text = ""
     }
 
-}
+    ctrl.start = function(){
+        swal("Good job!", "We start analyzing. It take a bit time to show your result. If the text is too long, this page cannot response for a while, but please hold on...", "success")
+        
+        $timeout(function (){
+
+            swal("timeout works", "Please check out the result!!", "success")
+            ctrl.text = $("#text")[0].value
+            ctrl.lettercount = ctrl.text.length
+            ctrl.tokens = rma.tokenize(ctrl.text)
+            ctrl.wordcount = ctrl.tokens.length
+            ctrl.text = ctrl.text
+            ctrl.wordfreq = check_wordfreq(ctrl.tokens)
+
+            // グローバル関数呼び出し
+            window.makeWordCloud(ctrl.wordfreq, "#notebook", 500, "wordcloud", "Impact", true)
+            swal("Done Analyzing!!", "Please check out the result!!", "success")
+        
+        }, 3000);
+        
+    }
+
+})
