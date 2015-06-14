@@ -1,0 +1,28 @@
+{
+  "name": "nlplit",
+  "version": "1.0.0",
+  "description": "Welcome to NlpKit. It's a Japanese text analyzer on browser. You don't need to install anything. Just copy and paste your text.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyu999/NlpKit.git"
+  },
+  "keywords": [
+    "d3.js"
+  ],
+  "author": "kyu999",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kyu999/NlpKit/issues"
+  },
+  "homepage": "https://github.com/kyu999/NlpKit#readme", 
+  "dependencies": {
+    "word2vec": "0.7.0", 
+    "kuromoji": "0.0.2"
+  }
+
+}

@@ -1,7 +1,6 @@
-var fill = d3.scale.category20();
+function makeWordCloud(data, parent_elem, svgscale, svg_class, font, rotate_word, my_colors){
 
-// windowオブジェクトのプロパティにすることでmakeWordCloudを他のファイルから呼び出せるようにする
-window.makeWordCloud = function(data, parent_elem, svgscale, svg_class, font, rotate_word, my_colors){
+      var fill = d3.scale.category20();
 
       function draw(words) {
         d3.select(parent_elem).append("svg")

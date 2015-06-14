@@ -29,7 +29,6 @@ function check_wordfreq(tokens){
 
     })
 
-    // Hashmap => Sorted Array by Word Frequency
     wordfreq_dic = []
     for(word in wordfreq){
         wordfreq_dic.push({"word": word, "value": wordfreq[word]})
@@ -46,18 +45,18 @@ angular.module('app', []).controller('mainCtrl', function($timeout, $q) {
     var ctrl = this;
 
     ctrl.msg = welcome_msg
-    ctrl.flag = false
     ctrl.text = ""
     ctrl.lettercount = 0
     ctrl.tokens = [] // format: [ ["tanaka", "N"], ["ga", "X"], ["Work", "V"] ]
     ctrl.wordcount = 0
     ctrl.wordfreq = []
 
-    ctrl.workerReplyUI
     ctrl.getPromiseTokens = function(text){
 
+        // to embrace by promise
         var defer = $q.defer();
         var worker = new Worker("worker.js");
+
         worker.postMessage(text)
 
         worker.onmessage = function(e) {
@@ -80,20 +79,18 @@ angular.module('app', []).controller('mainCtrl', function($timeout, $q) {
         ctrl.text = $("#text")[0].value
         ctrl.lettercount = ctrl.text.length
         
-        console.log(ctrl.getPromiseTokens(ctrl.text))
         ctrl.getPromiseTokens(ctrl.text)
             .then(Success, Fail)
 
     }
 
     function Success(tokens){
-        console.log("success")
         ctrl.tokens = tokens
         ctrl.wordcount = ctrl.tokens.length
         ctrl.text = ctrl.text
         ctrl.wordfreq = check_wordfreq(ctrl.tokens)
 
-        window.makeWordCloud(ctrl.wordfreq, "#notebook", 500, "wordcloud", "Impact", true)
+        makeWordCloud(ctrl.wordfreq, "#notebook", 500, "wordcloud", "Impact", true)
         swal("Done Analyzing!!", "Please check out the result!!", "success")
         
     }
