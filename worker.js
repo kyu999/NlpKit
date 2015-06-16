@@ -1,6 +1,6 @@
 // importScriptsが見つからないケースを避けるため
 if( 'undefined' === typeof window){
-    self.importScripts('rakutenma.js', 'model_ja.js', 'hanzenkaku.js');
+    self.importScripts('lib/rakutenma.js', 'lib/model_ja.js', 'lib/hanzenkaku.js');
 }
 
 // 形態素解析のためにrakutenMAをロードする

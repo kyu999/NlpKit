@@ -29,10 +29,10 @@ fs.readFile("raw.txt", "utf-8", function(err, data){
 */
 
 
-w2v.loadModel("wakati.txt", function(err, model){
+w2v.loadModel("data/wakati.txt", function(err, model){
 
   console.log(model)
-  console.log(model.mostSimilar('国', 20))
+  console.log(model.mostSimilar('Tragedy', 10))
 
 });
 
