@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/kyu999/NlpKit#readme",
   "dependencies": {
+    "express": "^4.12.4",
     "twitter": "^1.2.5"
   }
 }
