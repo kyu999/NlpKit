@@ -1,6 +1,6 @@
-# easyd3
+# d3-easy
 
-Welcome to easyd3 :) easyd3 is the easiest way to vidualize your data.
+Welcome to d3-easy :) d3-easy is the easiest way to vidualize your data.
 
 ### WordCloud
 Word cloud for all of your projects. Of course, any language is available.

@@ -1,44 +1,44 @@
 
-.node {
+.node_default {
   font: 300 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
   fill: #bbb;
 }
 
-.node:hover {
+.node_default:hover {
   fill: #000;
 }
 
-.link {
+.link_default {
   stroke: steelblue;
   stroke-opacity: .4;
   fill: none;
   pointer-events: none;
 }
 
-.node:hover,
-.node--source,
-.node--target {
+.node_default:hover,
+.linked_node,
+.linking_node {
   font-weight: 700;
 }
 
-.node--source {
+.linked_node {
   fill: #2ca02c;
 }
 
-.node--target {
+.linking_node {
   fill: #d62728;
 }
 
-.link--source,
-.link--target {
+.linked,
+.linking {
   stroke-opacity: 1;
   stroke-width: 2px;
 }
 
-.link--source {
+.linked {
   stroke: #d62728;
 }
 
-.link--target {
+.linking {
   stroke: #2ca02c;
 }

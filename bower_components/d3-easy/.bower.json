@@ -17,14 +17,13 @@
     "d3": "~3.5.5",
     "d3.layout.cloud": "~1.0.5"
   },
-  "_release": "ee25c6286b",
+  "_release": "8e1f188b60",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "ee25c6286b7be74207e89a3975667ad97816f481"
+    "commit": "8e1f188b603b5db44a5583e4780708db8b180eba"
   },
   "_source": "git://github.com/kyu999/d3-easy.git",
   "_target": "*",
-  "_originalSource": "d3-easy",
-  "_direct": true
+  "_originalSource": "d3-easy"
 }

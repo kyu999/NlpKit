@@ -92,7 +92,7 @@
                     <th>Frequency</th>
                 </tr>
                 <tr ng-repeat = "wordinfo in ctrl.wordfreq | orderBy:'-value'">    
-                    <td><a href = "#{{wordinfo.word}}">{{wordinfo.word}}</a></td>
+                    <td><a href = "#{{wordinfo.word}}">{{wordinfo.text}}</a></td>
                     <td>{{wordinfo.value}}</td>
                 </tr>
             </table>

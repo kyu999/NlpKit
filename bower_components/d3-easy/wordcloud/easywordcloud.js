@@ -1,18 +1,22 @@
-function makeWordCloud(data, parent_elem, svgscale, svg_class, font, rotate_word, my_colors){
+function makeWordCloud(data, href_func, parent_elem, svgscale, svg_class, font, rotate_word, my_colors){
 
       var color_converter = null
       if(my_colors){ color_converter = my_colors }else{ color_converter = d3.scale.category20() }
 
       function draw(words) {
+
         d3.select(parent_elem).append("svg")
             .attr("width", svgscale)
             .attr("height", svgscale)
             .attr("class", svg_class)
           .append("g")
             .attr("transform", "translate(" + svgscale / 2 + "," + svgscale / 2 + ")")
-          .selectAll("text")
+          .selectAll("a")
             .data(words)
-          .enter().append("text")
+          .enter()
+          .append("a")
+            .attr("xlink:href", href_func)
+          .append("text")
             .style("font-size", function(d) { return d.size + "px"; })
             .style("font-family", font)
             .style("fill", function(d, i) { return color_converter(i); })
@@ -20,7 +24,7 @@ function makeWordCloud(data, parent_elem, svgscale, svg_class, font, rotate_word
             .attr("transform", function(d) {
               return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
             })
-            .text(function(d) { return d.text; });
+            .text(function(d) { return d.text; })
       }
 
       if(svg_class){ d3.select("." + svg_class).remove() }
@@ -30,7 +34,7 @@ function makeWordCloud(data, parent_elem, svgscale, svg_class, font, rotate_word
       var sizeScale = d3.scale.linear().domain([0, data_max]).range([0, 1])
 
       data = data.map(function(d) {
-        return {text: d.word, size: 10 + sizeScale(d.value) * 90};
+        return {text: d.text, size: 10 + sizeScale(d.value) * 90};
       })
 
       var layout = d3.layout.cloud().size([svgscale, svgscale])

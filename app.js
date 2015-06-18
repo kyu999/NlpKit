@@ -31,7 +31,7 @@ function check_wordfreq(tokens){
 
     wordfreq_dic = []
     for(word in wordfreq){
-        wordfreq_dic.push({"word": word, "value": wordfreq[word]})
+        wordfreq_dic.push({"text": word, "value": wordfreq[word]})
     }
 
     return wordfreq_dic
@@ -41,6 +41,10 @@ var welcome_msg = "Welcome to NlpKit :) NlpKit is a tool to analyze Japanese tex
 
 // angulerJS controller
 angular.module('app', []).controller('mainCtrl', function($timeout, $q) {
+    
+    // you can use own color converting function if you want
+    var my_color = d3.scale.category20();
+    var href_func = function(d){ return "#" + d.text }
 
     var ctrl = this;
 
@@ -90,7 +94,8 @@ angular.module('app', []).controller('mainCtrl', function($timeout, $q) {
         ctrl.text = ctrl.text
         ctrl.wordfreq = check_wordfreq(ctrl.tokens)
 
-        makeWordCloud(ctrl.wordfreq, "#notebook", 500, "wordcloud", "Impact", true)
+        console.log(ctrl.wordfreq)
+        makeWordCloud(ctrl.wordfreq, href_func, "#notebook", 500, "wordcloud", "Impact", true, my_color)
         swal("Done Analyzing!!", "Please check out the result!!", "success")
         
     }
