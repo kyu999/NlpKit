@@ -5,85 +5,113 @@ from gensim.models import word2vec
 import MeCab
 import six
 
-"""
-問題はmecabから取得した文字列ではなく、ファイル書き込み自体にある。
-分かち書き自体も問題ない。
-コンテントではなくpythonによるファイル作成自体に問題がある。
-TypeError: can't concat bytes to str
-バイト文字列と通常の文字列をどこかで連結しているがためにエラーが起きている。mecabでわかちファイルを作成した場合問題ないので、
-エンコーディング周りが原因だと思われる。
-"""
+class NlpKit():
 
-def parse_to_wakati(text):
-    mecab = MeCab.Tagger("-Owakati")
-    nodes = mecab.parseToNode(text)
-    return mecab.parse(text)
+    def __init__(self):
+        pass
 
-def text_to_words(text, valid_speeches = None):
-    mecab = MeCab.Tagger()
-    nodes = mecab.parseToNode(text)
-    words = []
+    def is_invallid_word(self, word):
+        return word in {"", " "}
 
-    while True:
-        if(nodes == None):
-            break
-        # if the speech is valid, append, otherwise do nothing
-        features = nodes.feature.split(",")
-        if(valid_speeches is not None and features[0] in valid_speeches):
-            words.append(nodes.surface)
-        nodes = nodes.next
+    def filter_speeches(self, features):
+        return features[0] == "名詞"#features[1] == "固有名詞"
 
-    return words
+    def text_to_words(self, text, filter_speeches):
+        mecab = MeCab.Tagger()
+        node = mecab.parseToNode(text)
+        words = []
 
-def text_to_phrases(text):
-    tree = xmlpumpkin.parse_to_tree(text)
-    return [node.surface for node in tree.chunks]
+        while True:
+            if(node == None):
+                break
+            # if the speech is valid, append, otherwise do nothing
+            features = node.feature.split(",")
 
-def read_file(file_name):
-    with open(file_name, mode = 'r') as fh:
-        return fh.read()
+            if(self.is_invallid_word(node.surface)):
+                node = node.next
+                continue
+            if(filter_speeches(features)):
+                words.append(node.surface)
+            node = node.next
 
-def generate_file(text, file_name):
-    with open(file_name, mode = 'w', encoding = 'utf-8') as fh:
-        fh.write(text)
+        return words
 
-def find_similarities(list, wakati_file):
-    data = word2vec.Text8Corpus(wakati_file)
-    model = word2vec.Word2Vec(data, size=200, window=5, min_count=1, workers=4)
-    return [(token, model.most_similar(token)) for token in list]
+    def count_freq(self, tokens):
+        counter = {} # {"token1": 12, "token2": 5}
+        for token in tokens:
+            if(token in counter):
+                counter[token] = counter[token] + 1
+            else:
+                counter[token] = 1
+        sc = sorted(counter.items(), key=lambda x:x[1])
+        sc.reverse()
+        return sc
 
-def similarity_analyze(text, list, file_name):
-    wakati = parse_to_wakati(text).replace("\n", "\n ")
-    generate_file(wakati, file_name)
-    similars = find_similarities(list, file_name)
-    print(file_name)
-    print(similars)
-    return similars
+    def text_to_phrases(self, text):
+        tree = xmlpumpkin.parse_to_tree(text)
+        return [node.surface for node in tree.chunks]
 
-def text_analyze(text):
-    words_similars = similarity_analyze(text, text_to_words(text, {"名詞"}), "data/wakati_words.txt")
-    #phrases_similars = similarity_analyze(text, text_to_phrases(text), "data/wakati_phrases.txt")
+    def read_file(self, file_name):
+        with open(file_name, mode = 'r') as fh:
+            return fh.read()
 
-text = """戦争孤児の少年。低い身分から自らの腕で「天下の大将軍」となることを目指す。1話冒頭で「李信」と呼ばれている。豪気且つ直情径行で、自分の意志を貫く頑強な心を持つ。ただ礼儀作法は知らず、秦王である嬴政も堂々と呼び捨てている。相手が格上であってもそれに比例して自分の実力を底上げする武の天稟の持ち主。漂によると「自分が勝てない相手に信は勝つことができる」と言う。当初は自分の武力で全てを片付けようとする猪突猛進型であったが、王騎からの修行や助言、幾多の経験を経て「将軍」としての実力を身につけていく。王都奪還編後、昌文君から恩賞として土地と家（小屋）を与えられ下僕から平民となる。更に対魏国戦争における武勲により、まだ少年ながら百人将へ取り立てられる。趙軍侵攻編では王騎に「飛信隊」の名を貰い、趙将の馮忌を討ち取ると言う大功を上げる。その後、龐煖の夜襲によって大半の隊員を失うものの、生き残った仲間たちと王騎の最期に立ち会い、王騎から矛を譲り受けた[注 1]。趙との戦争の後は三百人将へ格上げされ、廉頗率いる魏軍との決戦直前には蒙恬や王賁とともに臨時千人将となった。その戦いの終盤、廉頗四天王の一人である輪虎を激戦の末に討ち果たした大功を認められ、正式に千人将へと昇進する。昇進直後は羌瘣が離脱したことと千人隊の規模の大きさが災いして連戦連敗を喫したが、貂が軍師として参入したことで持ち直した。対合従軍戦では麃公軍へと組み込まれ、趙将の万極を討ち取った。この際、本能型の才気があると認めてくれた麃公の軍から隊員を臨時補充され、二千人将の扱いとなる。その後、最期を見届けた麃公から遺品となる盾を託された。そして、叢の戦いの終盤では、龐煖を一騎打ちの末に撃退する。対合従軍戦終結後、論功行賞で三つの特別準功の一つとして正式に三千人将へ昇進し、飛信隊を率いて国境の防衛と復興に向かった。屯留の反乱では、謀略に嵌められた成蟜を救出する密命を課せられる。その際すでに四千人将に昇進しており、王騎の矛を使う準備の為に矛を使い始めている。だが、成矯の救出には間に合わなかった。著雍争奪戦では、魏軍本陣をわずか３日で陥落させる為の三つの主攻の一つを任された。だが初日から敵将・凱孟の挑発に乗って一騎打ちに興じるあまり、河了貂を荀早隊に拿捕されて動揺してしまい、唯一人で奪回を試みて失敗した羌瘣を責めた。幸いにも羌瘣が捕えていた荀早との人質交換が翌日に成立するも、貴重な2日目を台無しにする。その夜には羌瘣へ謝罪した。翌朝に河了貂から示された作戦で臨んだ最終日では、魏軍本陣を狙った羌瘣隊を欠いたことで凱孟軍に追い詰められるが、作戦通りに現れた隆国軍の救援を得て窮地を脱した。そして、遅ればせながら魏軍本陣へ向かう途中で呉鳳明の一行と遭遇し襲撃するが、呉鳳明の咄嗟の機転から、誤認した霊凰の方を討ち取った。著雍戦後には五千人将に昇進した。"""
-#data = read_file("data/raw.txt")
-#print(data)
-text_analyze(text)
+    def generate_file(self, text, file_name):
+        with open(file_name, mode = 'w', encoding = 'utf-8') as fh:
+            fh.write(text)
 
-# cabocha
+    def find_similarities(self, words, wakati_file):
+        data = word2vec.Text8Corpus(wakati_file)
+        model = word2vec.Word2Vec(data, size=200, window=5, min_count=1, workers=4)
+        return [{"token": word, "similarity": model.most_similar(word)} for word in words]
 
-"""
-戦争孤児の 少年。 低い 身分から 自らの 腕で
-"""
+    def similarity_analyze(self, words, file_name):
+        # word2vec model requires that wakati file has space after changing the line
+        wakati = " ".join(words) + " "
+        self.generate_file(wakati, file_name)
+        similars = self.find_similarities(words, file_name)
+        return similars
 
-# mecab
+    def analyze(self, text, file_name):
+        words = self.text_to_words(text, self.filter_speeches)
+        freq = self.count_freq(words)
+        similars = self.similarity_analyze(words, file_name)
+        return {"frequency": freq, "tokens": words, "similarities": similars}
 
-"""
-戦争 孤児 の 少年 。 低い 身分 から 自ら の 腕 で 
-"""
+text = """あらすじ[編集]
+嬴政との邂逅 - 王弟反乱（1巻 - 4巻）
+時代は、紀元前。500年の争乱が続く春秋戦国時代、中国西方の国・秦の片田舎に「信（しん）」と「漂（ひょう）」と言う名の2人の戦災孤児がいた。2人は、下僕の身分ながら、「武功により天下の大将軍になる」という夢を抱き、日々、剣の修行に明け暮れていた。
+やがて、大臣である昌文君に見出されて1人仕官した漂だったが、ある夜、残された信の元へ深手を負って戻って来る。息絶えた漂から託された信が辿り着いた目的地には、漂と瓜二つの少年がいた。その少年こそ秦国・第31代目の王である政（せい）であった。漂が命を落とす原因となった政に怒りをぶつける信だったが、自らに託された漂の思いと自らの夢のために、「王弟の反乱」そして乱世の天下に身を投じるのだった。
+初陣（5巻 - 7巻）
+反乱鎮圧の功績により平民の身分を得た信は三ヶ月後、兵卒として対魏攻防戦で初陣を迎える。劣勢の秦軍の中で信らの伍は奮闘し、千人将・縛虎申と共に魏軍副将・宮元を斃して戦場の要地を奪る。
+そこに突如現れた秦の怪鳥・王騎。信は図らずも天下の大将軍と会話する機会を得る。
+戦は秦・魏両軍の総大将同士の一騎打ちで決着し、勝利した秦軍は帰国の途についた。
+暗殺者襲来（8巻 - 10巻）
+秦王・政を弑すべく、王宮に暗殺者の集団が放たれた。百将に昇進した信はこれを迎え撃つが、暗殺団の中に戦場を共にした羌瘣の姿を見つける。彼、否彼女こそは伝説の刺客「蚩尤」に名を連ねる者だった。舞を思わせる剣技に圧倒されるが、他の暗殺団の到着に図らずも共闘することになる。
+辛くも暗殺団を撃退、生き残りの口から出た首謀者の名は現丞相・呂不韋であった。今は手を出せぬ巨大な敵に、政・信らは忍耐を余儀なくされる。
+秦趙攻防戦 - 王騎の死（11巻 - 16巻）
+韓を攻める秦国の隙をつき、積年の恨みを抱く趙軍が侵攻してきた。急報に防衛軍を編成する秦、率いるは最後の六将王騎。
+信の率いる百人隊は緒戦で王騎の特命を受け、趙将馮忌を討つ。飛信隊の名をもらった信は、将軍への道を垣間見た。
+蒙武軍の覚醒もあって敵軍師・趙荘の采配を悉く上回る王騎であったが、総大将の三大天・龐煖との決着をつけるべく、罠を承知で本陣を進める。龐煖とは、妻になるはずだった六将・摎を討たれていた王騎にとって因縁深き間柄だった。
+本軍同士が激突し、総大将同士が一騎打ちを戦う最高潮の中、突如秦軍の背後に未知の新手が姿を見せる。率いるのはもう一人の三大天・李牧であった。一転して死地に追い込まれた秦軍、一瞬の隙を突かれて王騎も致命傷を負う。
+信に背負われ激戦の末脱出に成功した王騎は、信に自らの鉾を託し、蒙武他将兵に多くのものを残して逝った。
+秦趙同盟 - 山陽攻略戦（17巻 - 23巻）
+王騎亡き後、諸国に国境を侵され始める中、三百人隊に増強された飛信隊は各地を転戦していた。そんな中、丞相・呂不韋の画策により趙国宰相が秦を訪れることが伝わる。その宰相こそ誰あろう李牧その人であり、秦趙同盟というとてつもない土産を携えていた。同盟成立後の宴席で李牧と直接話す機会を得た信は、李牧を戦場で斃すことを宣言した。
+秦趙同盟の効果は早くも現れ、要衝の地・山陽の奪取を目的とした、対魏侵攻戦が開始される。総指揮官は白老・蒙驁。遠征軍に加わった飛信隊は同じく三百人隊の玉鳳隊（隊長・王賁）、楽華隊（隊長・蒙恬）と競い合いながら功を挙げていく。
+進撃する秦軍の前に立ちはだかった魏軍は、想像だにしなかった大物・元趙軍三大天の廉頗に率いられていた。廉頗の登場で全中華が注目する中、秦・魏両軍は決戦の火ぶたを切る。かつての六将に伍すると評される王翦・桓騎の両名を副将に擁する秦軍と、廉頗四天王が率いる魏軍の間で交わされる激戦の中、信は四天王の輪虎を死闘の末討ち取り、戦功第三位の大手柄を挙げる。
+ついに相対した総大将同士の一騎打ちの中、蒙驁は六将と三大天の時代の終わりを廉頗に告げる。自らの存命を理由にそれを否定する廉頗であったが輪虎を討ち取った信から王騎の最期を聴き時代の流れを悟る。敗北を認めた廉頗は信に六将と三大天の伝説を塗り替える唯一の方法を教え、堂々と去って行った。
+幕間（23巻 - 24巻）
+先の戦功により正式に千人隊に昇格した飛信隊であったが戦術の要であった羌瘣が去り、連戦連敗を重ねていた。隊解散の危機に陥るが、立派な軍師に成長した河了貂の加入により救われる。
+他方、秦の山陽奪取により生まれた新たな情勢に対し、李牧はある決意を固め動き出す。
+合従軍侵攻 - 函谷関攻防戦（25巻 - 30巻）
+南の大国・楚に侵攻されただけでなく、同時に北や東からも攻め寄せて来た敵の大軍勢によって、大小様々な城塞を易々と失陥するという凶報が秦の国都・咸陽へ続々ともたらされた。秦の本営に立て直す間も与えぬ破壊力を示し、かつ進撃を止めぬ侵攻軍。これこそ、李牧が画策し、発動させた多国籍連合『合従軍』であった。
+たった一国で他国全部を迎え撃つために、秦国の本営はそれまでの防衛線を一切放棄し、国門・函谷関での集中防衛に国運を賭けた。
+合従軍侵攻 - 蕞防衛戦（31巻 - 33巻）
+北門の函谷関では秦軍諸将の奮戦もあって最大の窮地を凌ぎきったものの、南門の武関から咸陽に至る道沿いの城が次々と陥落するという不測の事態が発生する。李牧が自ら別働軍を率い、国都咸陽を陥落させるべく電撃戦を開始したのであった。この動きを察知した麃公や飛信隊の猛追が間に合うものの、龐煖との一騎打ちの末に麃公を討たれてしまい、飛信隊も敗走を余儀なくされる。
+この頃、呂不韋が不穏な画策をするなど内外から危機の迫る咸陽を、国を守る最後の拠点・蕞を防衛すべく、政は自ら出陣する。
+幕間（34巻）
+合従軍を辛くも撃退し、亡国の危機を脱した秦国では戦災復興と国境防備の再編に追われていた。一方、列国でも李牧や春申君ら合従軍を主導した要人らが遠征に失敗した責により左遷され、国体の変化を遂げつつあった。
+その頃、飛信隊を離脱して久しい羌瘣は、同族の羌明からの情報によって仇敵・幽連の居所を突き止め、決戦の地へ乗り込んだ。しかしその情報も策謀に富む幽連の仕組んだ罠で、待ち伏せていた幽族の手練れ30人余に襲われる羌瘣。それでも絶え間なく迫る白刃を掻い潜り、手練れを幾人も斬り伏せ、幽連に一太刀浴びせんとしたところ、簡単に跳ね返される。巫舞すら要らぬ幽連は、羌瘣の想像を遥かに超える怪物と成っていた。王弟謀反（35巻）合従軍以来、久しく無かった趙軍の襲来を退けた屯留から、突如『王弟謀反』の一報が咸陽にもたらされた。２度目の造反とはいうものの、屯留の危機に自ら立ち上がった成蟜の人間的成長を認める政としては、にわかに信じがたい。そこで新将軍の壁に討伐軍を託すとともに、密命を課した。著雍攻略戦（36巻 - 37巻）戦災復興と防備の再編を経て、再び攻勢に移った秦国は、山陽に続く魏国の『著雍』奪取に狙いを定めた。王騎の遺軍を預かる騰将軍へその任が下ると、独立遊軍の玉鳳隊と飛信隊へも増援招集がかかった。しかし、ただでさえ堅固な『著雍』防衛網に、呉鳳明を急遽呼び寄せてまで要衝の防衛強化に努める魏軍には手を焼かされる。そこで北方の王翦軍に更なる増援を求めようにも、対峙中の趙軍まで招き入れてしまう恐れがある、との王賁による提言で騰将軍は現有戦力だけでの継戦を決断する。それでも王賁の献策で、かすかな綻びを突いて果敢に三方から一斉に攻め込む秦軍だったが、その魏陣営には古参の大将軍たち「火龍」の旗が、幾つも翻っていた。毐国自立と嬴政加冠（37巻 - ）激戦の末、奪取した魏領の著雍を、山陽と並ぶ不退転の要地として要塞化するのに莫大な資金を必要とする難題を、隠棲していたはずの太后が後宮による負担を突如申し出てきたことで解決を見出した。ただし、その見返りに北の辺地・太原での暮らしと、その地方長官へ有能なる宦官・嫪毐を据えさせろとの要求を、大王派ばかりか相国派でさえも呑むこととなった。ところが、やがて千や万の規模で守備兵を引き抜かれた著雍では、魏軍の襲来対応に忙殺される。その兵たちの転出先は北の辺地・太原。しかも、あろうことか『毐国』と国家を僭称した太原では、中央政府からの勧告の使者すら取り合わない始末。秦の内外から人や資金を続々と入手し、国家としての体裁を整えていく『毐国』への対応に手をこまねき、越年した秦では、とうとう政が成人した。そう、内外に向けた正式な王としての宣言であり、大王派と相国派の長きに亘る暗闘に終止符を打つ「加冠の儀」を迎える年である。しかし、その儀式を厳かに執り行えるほど、国内情勢は穏やかではなかった。"""
 
-"""
-{やりたいこと: 係受け解析と形態素解析を融合したコンパクトな分析, 
- コンパクトな分析とは: 数万件のデータを入力するのではなく、少数のデータで理解可能で有用な知見を発掘する,
- 戦略: [係受け解析, 形態素解析, 次元圧縮, 潜在意味解析],
- 武器: [mecab, cabocha, gensim]
-"""
+#text = "たった一国で他国全部を迎え撃つために"#、秦国の本営はそれまでの防衛線を一切放棄し、国門・函谷関での集中防衛に国運を賭けた。"
+kit = NlpKit()
+print(kit.analyze(text, "data/wakati_words.txt"))
