@@ -1,1 +1,1 @@
-web: gunicorn app:json_server
+gunicorn json:app --log-file -
