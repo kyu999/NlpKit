@@ -29,10 +29,7 @@ def twitter(keyword):
         # ensure_ascii=Falseにしないと日本語がエスケープされて "/u0434"みたくなる
         json.dump(data, f, sort_keys=True, indent=4, ensure_ascii=False)
 
-
     return jsonify(data)
-    #data = client.request('https://twitter.com/search?q=anime','GET')
-    #print(data)
 
 if __name__ == '__main__':
     app.run()

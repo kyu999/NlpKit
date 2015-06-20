@@ -1,13 +1,15 @@
 from pymongo import MongoClient
 import json
+from twitter import *
 
-class DAO():
-    def __init__(self):
-        f = open("secret.json")
-        mongo_info = json.load(f)["mongo"]
-        self.client = MongoClient("mongodb://" + mongo_info["user"] + ":" + mongo_info["ps"] + "@" + mongo_info["cluster"] + ".mongolab.com:" + mongo_info["node_id"] + "/" + mongo_info["coll_name"])
-        self.tw_db = self.client["twitter_storage"]
-        self.tw_coll = self.tw_db["tweets"]
+class DAO:
+    secret = json.load(open("secret.json"))
+    tw_secret = secret["twitter"]
+    twit = Twitter(auth=OAuth(tw_secret["access_token_key"], tw_secret["access_token_secret"], tw_secret["consumer_key"], tw_secret["consumer_secret"]))
 
-    def insert_tweets(self, keywords, tweets):
-        self.tw_coll.insert({"keywords": keywords, "tweets": tweets})
+    mongo_info = secret["mongo"]
+    client = MongoClient("mongodb://" + mongo_info["user"] + ":" + mongo_info["ps"] + "@" + mongo_info["cluster"] + ".mongolab.com:" + mongo_info["node_id"] + "/" + mongo_info["database"])
+    db = client["nlpkit"]
+    config_coll = db["config"]
+    tw_coll = db["tweets"]
+    w2v_coll = db["word2vec"]

@@ -4,19 +4,26 @@ import xmlpumpkin
 from gensim.models import word2vec
 import MeCab
 import six
+import json
 
-class NlpKit():
+from dao import DAO
+from tool import Tool
 
-    def __init__(self):
-        pass
+class NlpKit:
 
-    def is_invallid_word(self, word):
-        return word in {"", " "}
+    stopwords = json.load(open("stopwords.json"))["stopwords"]
 
-    def filter_speeches(self, features):
-        return features[0] == "名詞"#features[1] == "固有名詞"
+    @staticmethod
+    def is_invallid_word(word):
+        return word in NlpKit.stopwords
 
-    def text_to_words(self, text, filter_speeches):
+    @staticmethod
+    def filter_speeches(features):
+        return features[0] == "名詞"
+        #return features[1] == "固有名詞"
+
+    @staticmethod
+    def text_to_words(text, filter_speeches):
         mecab = MeCab.Tagger("-Owakati")
         node = mecab.parseToNode(text)
         words = []
@@ -25,7 +32,7 @@ class NlpKit():
             # if the speech is valid, append, otherwise do nothing
             features = node.feature.split(",")
             try:
-                if(self.is_invallid_word(node.surface)):
+                if(NlpKit.is_invallid_word(node.surface)):
                     node = node.next
                     continue
                 if(filter_speeches(features)):
@@ -37,7 +44,8 @@ class NlpKit():
 
         return words
 
-    def count_freq(self, tokens):
+    @staticmethod
+    def count_freq(tokens):
         counter = {} # {"token1": 12, "token2": 5}
         for token in tokens:
             if(token in counter):
@@ -48,35 +56,42 @@ class NlpKit():
         sc.reverse()
         return sc
 
-    def text_to_phrases(self, text):
+    @staticmethod
+    def text_to_phrases(text):
         tree = xmlpumpkin.parse_to_tree(text)
         return [node.surface for node in tree.chunks]
 
-    def read_file(self, file_name):
-        with open(file_name, mode = 'r') as fh:
-            return fh.read()
-
-    def generate_file(self, text, file_name):
-        with open(file_name, mode = 'w', encoding = 'utf-8') as fh:
-            fh.write(text)
-
-    def find_similarities(self, words, wakati_file):
+    @staticmethod
+    def find_similarities(words, wakati_file):
         data = word2vec.Text8Corpus(wakati_file)
-        model = word2vec.Word2Vec(data, size=200, window=5, min_count=1, workers=4)
-        return [{"token": word, "similarity": model.most_similar(word)} for word in words]
+        result = None
+        try:
+            model = word2vec.Word2Vec(data, size=200, window=5, min_count=1, workers=4)
+            return [{"token": word, "similarity": model.most_similar(word)} for word in words]
+        except:
+            return [{"error": "#words not enough to analyze"}]
 
-    def similarity_analyze(self, words, file_name):
+    @staticmethod
+    def similarity_analyze(words, file_name):
         # word2vec model requires that wakati file has space after changing the line
         wakati = " ".join(words) + " "
-        self.generate_file(wakati, file_name)
-        similars = self.find_similarities(words, file_name)
+        Tool.generate_file(wakati, file_name)
+        similars = NlpKit.find_similarities(words, file_name)
         return similars
 
-    def analyze(self, text, file_name):
-        words = self.text_to_words(text, self.filter_speeches)
-        freq = self.count_freq(words)
-        similars = self.similarity_analyze(words, file_name)
-        return {"frequency": freq, "tokens": words, "similarities": similars}
+    @staticmethod
+    def save_analysis(result):
+        DAO.w2v_coll.save(result)
+
+    @staticmethod
+    def analyze(text, file_name, save_mongo):
+        words = NlpKit.text_to_words(text, NlpKit.filter_speeches)
+        freq = NlpKit.count_freq(words)
+        similars = NlpKit.similarity_analyze(words, file_name)
+        result = {"frequency": freq, "similarities": similars}
+        if(save_mongo):
+            NlpKit.save_analysis(result)
+        return result
 
 text = """あらすじ[編集]
 嬴政との邂逅 - 王弟反乱（1巻 - 4巻）
@@ -113,6 +128,4 @@ text = """あらすじ[編集]
 合従軍を辛くも撃退し、亡国の危機を脱した秦国では戦災復興と国境防備の再編に追われていた。一方、列国でも李牧や春申君ら合従軍を主導した要人らが遠征に失敗した責により左遷され、国体の変化を遂げつつあった。
 その頃、飛信隊を離脱して久しい羌瘣は、同族の羌明からの情報によって仇敵・幽連の居所を突き止め、決戦の地へ乗り込んだ。しかしその情報も策謀に富む幽連の仕組んだ罠で、待ち伏せていた幽族の手練れ30人余に襲われる羌瘣。それでも絶え間なく迫る白刃を掻い潜り、手練れを幾人も斬り伏せ、幽連に一太刀浴びせんとしたところ、簡単に跳ね返される。巫舞すら要らぬ幽連は、羌瘣の想像を遥かに超える怪物と成っていた。王弟謀反（35巻）合従軍以来、久しく無かった趙軍の襲来を退けた屯留から、突如『王弟謀反』の一報が咸陽にもたらされた。２度目の造反とはいうものの、屯留の危機に自ら立ち上がった成蟜の人間的成長を認める政としては、にわかに信じがたい。そこで新将軍の壁に討伐軍を託すとともに、密命を課した。著雍攻略戦（36巻 - 37巻）戦災復興と防備の再編を経て、再び攻勢に移った秦国は、山陽に続く魏国の『著雍』奪取に狙いを定めた。王騎の遺軍を預かる騰将軍へその任が下ると、独立遊軍の玉鳳隊と飛信隊へも増援招集がかかった。しかし、ただでさえ堅固な『著雍』防衛網に、呉鳳明を急遽呼び寄せてまで要衝の防衛強化に努める魏軍には手を焼かされる。そこで北方の王翦軍に更なる増援を求めようにも、対峙中の趙軍まで招き入れてしまう恐れがある、との王賁による提言で騰将軍は現有戦力だけでの継戦を決断する。それでも王賁の献策で、かすかな綻びを突いて果敢に三方から一斉に攻め込む秦軍だったが、その魏陣営には古参の大将軍たち「火龍」の旗が、幾つも翻っていた。毐国自立と嬴政加冠（37巻 - ）激戦の末、奪取した魏領の著雍を、山陽と並ぶ不退転の要地として要塞化するのに莫大な資金を必要とする難題を、隠棲していたはずの太后が後宮による負担を突如申し出てきたことで解決を見出した。ただし、その見返りに北の辺地・太原での暮らしと、その地方長官へ有能なる宦官・嫪毐を据えさせろとの要求を、大王派ばかりか相国派でさえも呑むこととなった。ところが、やがて千や万の規模で守備兵を引き抜かれた著雍では、魏軍の襲来対応に忙殺される。その兵たちの転出先は北の辺地・太原。しかも、あろうことか『毐国』と国家を僭称した太原では、中央政府からの勧告の使者すら取り合わない始末。秦の内外から人や資金を続々と入手し、国家としての体裁を整えていく『毐国』への対応に手をこまねき、越年した秦では、とうとう政が成人した。そう、内外に向けた正式な王としての宣言であり、大王派と相国派の長きに亘る暗闘に終止符を打つ「加冠の儀」を迎える年である。しかし、その儀式を厳かに執り行えるほど、国内情勢は穏やかではなかった。"""
 
-text = "たった一国で他国全部を迎え撃つために"#、秦国の本営はそれまでの防衛線を一切放棄し、国門・函谷関での集中防衛に国運を賭けた。"
-#kit = NlpKit()
-#print(kit.analyze(text, "data/wakati_words.txt"))
+print(NlpKit.analyze(text, "data/wakati_words.txt", True))
