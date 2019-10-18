@@ -52,5 +52,5 @@ Theano==0.6.0
 tornado==4.1
 urllib3==1.8.2
 virtualenv==13.0.3
-Werkzeug==0.9.6
+Werkzeug==0.15.3
 xmlpumpkin==0.1
