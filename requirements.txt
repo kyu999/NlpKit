@@ -9,7 +9,7 @@ CherryPy==3.7.0
 click==4.0
 cssselect==0.9.1
 docutils==0.12
-Flask==0.10.1
+Flask==1.0
 gensim==0.10.3
 gnureadline==6.3.3
 gunicorn==19.3.0
