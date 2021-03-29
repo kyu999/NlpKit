@@ -29,7 +29,7 @@ oauth==1.0.1
 pandas==0.13.1
 peewee==2.6.0
 ptyprocess==0.4
-Pygments==2.0.2
+Pygments==2.7.4
 -e git://github.com/lisa-lab/pylearn2.git@7845c3712f8f44ed6e6179e9edffdc9cb78cfc68#egg=pylearn2-master
 pymongo==2.7.2
 pyparsing==2.0.2
