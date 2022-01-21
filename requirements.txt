@@ -13,7 +13,7 @@ Flask==0.10.1
 gensim==0.10.3
 gnureadline==6.3.3
 gunicorn==19.3.0
-ipython==3.1.0
+ipython==7.16.3
 itsdangerous==0.24
 Jinja2==2.7.3
 jsonschema==2.4.0
