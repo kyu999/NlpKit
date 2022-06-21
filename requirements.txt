@@ -23,7 +23,7 @@ matplotlib==1.3.1
 mechanize==0.2.5
 mistune==0.5.1
 nose==1.3.3
-numpy==1.9.1
+numpy==1.22.0
 numpydoc==0.5
 oauth==1.0.1
 pandas==0.13.1
